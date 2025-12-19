@@ -1,7 +1,3 @@
-
-
-
-
 # IDS/IPS Tool
 
 
@@ -29,7 +25,7 @@
 ## 🚀 Fitur Utama
 
 - **IDS (Intrusion Detection System):** Deteksi serangan dari file log
-- **IPS (Intrusion Prevention System):** Pencegahan otomatis, blokir IP via iptables
+- **IPS (Intrusion Prevention System):** Pencegahan otomatis, blokir IP via iptables, nftables, atau ufw (kompatibel dengan banyak distro Linux modern)
 - **Real-time Monitoring:** Pantau file log secara langsung (dengan watchdog)
 - **Network IDS:** Sniffer multi-interface, mirip Suricata
 - **Statistik & Visualisasi:** Statistik otomatis, dashboard web real-time (FastAPI + Chart.js)
@@ -97,7 +93,7 @@ pip install git+https://github.com/Bangkah/IDS-IPS-Tool.git@v1.0.1
 
 ## 📝 Konfigurasi
 
-Edit `config.json` untuk menambah/mengubah pola deteksi, file log, dsb. Contoh:
+Edit `config.json` untuk menambah/mengubah pola deteksi, file log, dan backend firewall (untuk IPS). Contoh:
 
 ```json
 {
@@ -105,11 +101,20 @@ Edit `config.json` untuk menambah/mengubah pola deteksi, file log, dsb. Contoh:
     {"name": "Failed password", "regex": "Failed password.*from ([\\d.]+)", "severity": "high"}
   ],
   "log_file": "ids_ips.log",
+  "firewall": "auto",  // Pilihan: auto, iptables, nftables, ufw
   "net_patterns": [
     {"name": "TCP SYN Scan", "type": "tcp_syn"}
   ]
 }
 ```
+
+**Opsi `firewall` (khusus IPS):**
+- `auto` (default): deteksi otomatis backend firewall (nftables > ufw > iptables)
+- `iptables`: paksa gunakan iptables
+- `nftables`: paksa gunakan nftables
+- `ufw`: paksa gunakan ufw
+
+Jika Anda menggunakan distro modern (Ubuntu 22.04+, Debian 12+, Fedora, dsb), backend default kemungkinan akan menggunakan nftables atau ufw. Untuk sistem lama, biasanya iptables.
 
 ---
 
@@ -126,11 +131,13 @@ python ids_main.py config.json /var/log/auth.log --realtime
 ```
 > **Catatan:** Pastikan file log yang dimonitor benar-benar ada. Jika file tidak ditemukan, gunakan file log lain yang tersedia, misal sample.log atau log lain yang ingin Anda monitor.
 
-### 3. IPS (Blokir IP Otomatis)
+### 3. IPS (Blokir IP Otomatis, Multi-Firewall)
 ```bash
 python ips_main.py config.json sample.log
 ```
 Ganti `sample.log` dengan file log yang ingin Anda analisis.
+
+> **Catatan:** IPS kini mendukung iptables, nftables, dan ufw. Secara default akan memilih otomatis backend firewall yang tersedia di sistem Anda. Anda bisa memaksa backend tertentu lewat config.json (lihat bagian Konfigurasi).
 
 ### 4. Network IDS (Sniffer)
 ```bash
@@ -193,6 +200,10 @@ python -m unittest discover tests
   Jalankan uvicorn dengan argumen `--port`, contoh: `uvicorn dashboard.app:app --reload --port 8080`
 - **Bagaimana menambah/menghapus fitur dashboard?**  
   Edit file di `dashboard/` (app.py, templates, static)
+- **Bagaimana cara memilih backend firewall?**  
+  Edit `firewall` di config.json: `auto`, `iptables`, `nftables`, atau `ufw`.
+- **Bagaimana tahu backend mana yang dipakai?**  
+  IPS akan menampilkan backend yang digunakan di log dan output saat blokir IP.
 
 ---
 
@@ -208,6 +219,8 @@ python -m unittest discover tests
   Pastikan file log (`ids_ips.log`) ada dan terisi event.
 - **Notifikasi desktop tidak muncul?**  
   Pastikan `notify2` terinstall dan desktop environment mendukung.
+- **Blokir IP gagal?**  
+  Pastikan Anda menjalankan dengan hak sudo/root dan backend firewall (iptables/nftables/ufw) tersedia di sistem. Cek log untuk pesan error backend.
 
 ---
 

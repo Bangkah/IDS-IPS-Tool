@@ -5,6 +5,7 @@
     {"name": "Port scan", "regex": "Possible port scan.*from ([\\d.]+)", "severity": "low"}
   ],
   "log_file": "ids_ips.log",
+  "firewall": "auto",
   "net_patterns": [
     {"name": "TCP SYN Scan", "type": "tcp_syn"},
     {"name": "ICMP Echo", "type": "icmp_echo"},

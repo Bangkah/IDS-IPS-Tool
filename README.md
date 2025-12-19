@@ -1,14 +1,24 @@
 
 
+
 # IDS/IPS Tool
 
 ![Python](https://img.shields.io/badge/python-3.7%2B-blue) ![License](https://img.shields.io/github/license/Bangkah/IDS-IPS-Tool) ![CI](https://github.com/Bangkah/IDS-IPS-Tool/actions/workflows/python-package.yml/badge.svg)
 
 Sistem modular deteksi & pencegahan serangan (IDS/IPS) berbasis Python. Mendukung analisis file log, monitoring real-time, dan network sniffer (Suricata-like).
 
+---
 
+## Fitur Utama
+- Deteksi serangan dari file log (IDS)
+- Pencegahan otomatis (IPS, blokir IP via iptables)
+- Monitoring real-time file log
+- Network IDS (sniffer, multi-interface)
+- Statistik serangan otomatis
+- Logging rotating, notifikasi desktop (opsional)
+- Konfigurasi mudah via config.json
 
-## Struktur Folder
+## Struktur Proyek
 ```
 ids_ips_tool/
 ├── src/           # Kode utama modular (IDS, IPS, logger, dsb)
@@ -20,24 +30,12 @@ ids_ips_tool/
 ├── README.md
 ```
 
-
-## Fitur Utama
-- Deteksi serangan dari file log (IDS)
-- Pencegahan otomatis (IPS, blokir IP via iptables)
-- Monitoring real-time file log
-- Network IDS (sniffer, multi-interface)
-- Statistik serangan otomatis
-- Logging rotating, notifikasi desktop (opsional)
-- Konfigurasi mudah via config.json
-
-
 ## Instalasi
 1. Pastikan Python 3.7+ dan pip sudah terpasang
 2. Install dependensi:
    ```
    pip install -r requirements.txt
    ```
-
 
 ## Konfigurasi
 Edit `config.json` untuk menambah/mengubah pola deteksi. Contoh:
@@ -53,114 +51,66 @@ Edit `config.json` untuk menambah/mengubah pola deteksi. Contoh:
 }
 ```
 
-
 ## Cara Menjalankan
 
 ### IDS (Analisis File Log)
-	python ids_main.py config.json sample.log
-
-### IDS Real-time
-	python ids_main.py config.json /var/log/auth.log --realtime
-
-### IPS (Blokir IP Otomatis)
-	python ips_main.py config.json sample.log
-
-### Network IDS (Sniffer)
-	sudo python netids_main.py config.json
-	# Pilih interface: sudo python netids_main.py config.json --iface eth0
-
-
-## Pengujian
-	python -m unittest discover tests
-
-
-## Kustomisasi & FAQ
-- Tambahkan pola deteksi di `config.json`
-- Ubah log file di `config.json`
-- Kembangkan src/ids.py, src/ips.py, src/netids.py untuk fitur baru (notifikasi, integrasi SIEM, dsb)
-- Tambahkan unit test di folder `tests/`
-
-**FAQ:**
-- Bagaimana menambah pola deteksi?  
-  Edit `config.json` bagian `patterns` atau `net_patterns`.
-- Apakah bisa menambah notifikasi lain?  
-  Ya, modifikasi `src/alert.py`.
-- Bagaimana menambah test?  
-  Tambahkan file `test_*.py` di folder `tests/`.
-
-
-## Catatan
-- Untuk notifikasi desktop, pastikan `notify2` terinstall
-- Untuk real-time, pastikan `watchdog` terinstall
-- Untuk network IDS, butuh akses root/sudo
-- Statistik serangan otomatis muncul saat Ctrl+C
-- Logging otomatis rotating
-
----
-Dikembangkan oleh: Bangkah & Tim Cyber Security
-
-## Struktur Folder
-```
-ids_ips_tool/
-├── src/
-│   ├── config.py
-│   ├── ids.py
-│   ├── ips.py
-│   ├── logger.py
-│   └── alert.py
-├── ids.py (legacy)
-├── ips.py (legacy)
-├── ids_main.py
-├── ips_main.py
-├── netids_main.py
-├── config.json
-├── sample.log
-└── README.md
-```
-
-## Menjalankan IDS
-```
+```bash
 python ids_main.py config.json sample.log
 ```
 
-### Mode Real-time (Seperti Antivirus)
-```
+
+### IDS Real-time (Seperti Antivirus)
+```bash
 python ids_main.py config.json /var/log/auth.log --realtime
 ```
+> **Catatan:** Pastikan file log yang dimonitor benar-benar ada. Jika file tidak ditemukan, gunakan file log lain yang tersedia, misal sample.log atau log lain yang ingin Anda monitor.
 
-## Menjalankan IPS
-```
+### IPS (Blokir IP Otomatis)
+```bash
 python ips_main.py config.json sample.log
 ```
+Ganti `sample.log` dengan file log yang ingin Anda analisis.
 
-## Menjalankan Network IDS (Sniffer, Suricata-like)
-```
+### Network IDS (Sniffer)
+```bash
 sudo python netids_main.py config.json
-```
-Opsional: pilih interface tertentu dengan --iface (misal eth0, wlan0)
-```
-sudo python netids_main.py config.json --iface eth0
+# Untuk memonitor interface tertentu:
+sudo python netids_main.py config.json --iface <nama_interface>
+# Contoh: sudo python netids_main.py config.json --iface enp3s0
+# Catatan: Pastikan nama interface (misal eth0, enp3s0, wlan0) sesuai dengan yang ada di sistem Anda.
+# Untuk melihat daftar interface, gunakan perintah: ip link
 ```
 
 ## Pengujian
-```
+```bash
 python -m unittest discover tests
 ```
 
 ## Kustomisasi
 - Tambahkan pola deteksi di `config.json`
 - Ubah log file di `config.json`
-- Kembangkan src/ids.py atau src/ips.py untuk fitur baru (notifikasi, integrasi IPS, dsb)
+- Kembangkan src/ids.py, src/ips.py, src/netids.py untuk fitur baru (notifikasi, integrasi SIEM, dsb)
+- Tambahkan unit test di folder `tests/`
+
+## FAQ
+- **Bagaimana menambah pola deteksi?**  
+  Edit `config.json` bagian `patterns` atau `net_patterns`.
+- **Apakah bisa menambah notifikasi lain?**  
+  Ya, modifikasi `src/alert.py`.
+- **Bagaimana menambah test?**  
+  Tambahkan file `test_*.py` di folder `tests/`.
 
 ## Catatan
-- File di src/ adalah kode utama (modular, siap dikembangkan).
-- File legacy (ids.py, ips.py) bisa dihapus jika sudah tidak dipakai.
-- Semua log dan blokir IP dicatat otomatis.
 - Untuk notifikasi desktop, pastikan `notify2` terinstall (`pip install notify2`)
 - Untuk real-time, pastikan `watchdog` terinstall (`pip install watchdog`)
-- Untuk network IDS, butuh akses root/sudo.
-- Statistik serangan otomatis muncul saat Anda menekan Ctrl+C.
-- Logging otomatis rotating, log lama tidak hilang.
+- Untuk network IDS, butuh akses root/sudo
+- Statistik serangan otomatis muncul saat Ctrl+C
+- Logging otomatis rotating
 
 ---
-Dikembangkan oleh: Bangkah
+
+---
+
+<div align="center">
+  <b>Dikembangkan oleh: Bangkah</b>
+</div>

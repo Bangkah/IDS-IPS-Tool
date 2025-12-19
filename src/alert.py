@@ -1,4 +1,4 @@
-def print_alert(msg, severity="info"):
+
 import sys
 
 def print_alert(msg, severity="info"):

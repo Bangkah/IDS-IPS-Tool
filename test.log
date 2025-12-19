@@ -1,0 +1,16 @@
+2025-12-20 04:50:44 WARNING: [IDS] {'line': 1, 'pattern': 'TestPattern', 'severity': 'high', 'ip': '1.2.3.4', 'content': 'attack from 1.2.3.4 detected'}
+2025-12-20 04:50:44 WARNING: [IPS] Blocking IP: 1.2.3.4 | Reason: TestPattern | Line: 1 | attack from 1.2.3.4 detected
+2025-12-20 04:52:37 WARNING: [IDS] {'line': 1, 'pattern': 'TestPattern', 'severity': 'high', 'ip': '1.2.3.4', 'content': 'attack from 1.2.3.4 detected'}
+2025-12-20 04:52:37 WARNING: [IPS] Blocking IP: 1.2.3.4 | Reason: TestPattern | Line: 1 | attack from 1.2.3.4 detected
+2025-12-20 04:54:26 WARNING: [IDS] {'line': 1, 'pattern': 'TestPattern', 'severity': 'high', 'ip': '1.2.3.4', 'content': 'attack from 1.2.3.4 detected'}
+2025-12-20 04:54:26 WARNING: [IPS] Blocking IP: 1.2.3.4 | Reason: TestPattern | Line: 1 | attack from 1.2.3.4 detected
+2025-12-20 04:54:40 WARNING: [IDS] {'line': 1, 'pattern': 'TestPattern', 'severity': 'high', 'ip': '1.2.3.4', 'content': 'attack from 1.2.3.4 detected'}
+2025-12-20 04:54:40 WARNING: [IPS] Blocking IP: 1.2.3.4 | Reason: TestPattern | Line: 1 | attack from 1.2.3.4 detected
+2025-12-20 04:55:25 WARNING: [IDS] {'line': 1, 'pattern': 'TestPattern', 'severity': 'high', 'ip': '1.2.3.4', 'content': 'attack from 1.2.3.4 detected'}
+2025-12-20 04:55:25 WARNING: [IPS] Blocking IP: 1.2.3.4 | Reason: TestPattern | Line: 1 | attack from 1.2.3.4 detected
+2025-12-20 04:55:52 WARNING: [IDS] {'line': 1, 'pattern': 'TestPattern', 'severity': 'high', 'ip': '1.2.3.4', 'content': 'attack from 1.2.3.4 detected'}
+2025-12-20 04:55:52 WARNING: [IPS] Blocking IP: 1.2.3.4 | Reason: TestPattern | Line: 1 | attack from 1.2.3.4 detected
+2025-12-20 04:56:21 WARNING: [IDS] {'line': 1, 'pattern': 'TestPattern', 'severity': 'high', 'ip': '1.2.3.4', 'content': 'attack from 1.2.3.4 detected'}
+2025-12-20 04:56:21 WARNING: [IPS] Blocking IP: 1.2.3.4 | Reason: TestPattern | Line: 1 | attack from 1.2.3.4 detected
+2025-12-20 04:56:21 WARNING: [NetIDS] 2025-12-20 04:56:21 | ICMP Echo 1.1.1.1 -> 2.2.2.2
+2025-12-20 04:56:21 WARNING: [NetIDS] 2025-12-20 04:56:21 | TCP SYN 1.1.1.1:1234 -> 2.2.2.2:22

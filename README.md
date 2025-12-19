@@ -82,6 +82,17 @@ ids_ips_tool/
    pip install watchdog
    ```
 
+### Instalasi langsung sebagai package dari GitHub
+
+```bash
+pip install git+https://github.com/Bangkah/IDS-IPS-Tool.git
+```
+
+Atau untuk versi tertentu:
+```bash
+pip install git+https://github.com/Bangkah/IDS-IPS-Tool.git@v1.0.1
+```
+
 ---
 
 ## 📝 Konfigurasi

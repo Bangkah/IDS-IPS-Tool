@@ -1,6 +1,12 @@
 
 
+
 # IDS/IPS Tool
+
+![Python](https://img.shields.io/badge/python-3.7%2B-blue)
+![License](https://img.shields.io/github/license/Bangkah/IDS-IPS-Tool)
+![CI](https://github.com/Bangkah/IDS-IPS-Tool/actions/workflows/python-package.yml/badge.svg)
+
 
 Sistem modular untuk deteksi dan pencegahan serangan (IDS/IPS) berbasis Python. Mendukung analisis file log, monitoring real-time, dan network sniffer ala Suricata.
 
@@ -37,6 +43,14 @@ ids_ips_tool/
 - Kode modular, siap dikembangkan
 
 ## Instalasi
+## Membuat Release/Tag
+Untuk menandai versi rilis:
+```
+git tag v1.0.0
+git push origin v1.0.0
+```
+Atau gunakan fitur Release di GitHub.
+
 1. Pastikan Python 3.7+ dan pip sudah terpasang
 2. Install dependensi:
 	 ```
@@ -91,11 +105,26 @@ sudo python netids_main.py config.json --iface eth0
 ```
 
 ## Pengujian
+Semua kode utama sudah dilengkapi unit test:
+```
+python -m unittest discover tests
+```
+CI/CD otomatis menjalankan test di setiap push/PR (lihat badge di atas).
 ```
 python -m unittest discover tests
 ```
 
 ## Kustomisasi & Pengembangan
+## Dokumentasi Lanjutan
+- **FAQ:**
+	- Q: Bagaimana menambah pola deteksi?  
+		A: Edit `config.json` bagian `patterns` atau `net_patterns`.
+	- Q: Apakah bisa menambah notifikasi lain?  
+		A: Ya, modifikasi `src/alert.py`.
+	- Q: Bagaimana menambah test?  
+		A: Tambahkan file `test_*.py` di folder `tests/`.
+- **Panduan Kontribusi:** Lihat CONTRIBUTING.md
+- **Lisensi:** MIT (lihat LICENSE)
 - Tambahkan pola deteksi di `config.json`
 - Ubah log file di `config.json`
 - Kembangkan src/ids.py, src/ips.py, src/netids.py untuk fitur baru (notifikasi, integrasi SIEM, dsb)
@@ -109,7 +138,7 @@ python -m unittest discover tests
 - Logging otomatis rotating, log lama tidak hilang.
 
 ---
-Dikembangkan oleh: Tim Cyber Security
+Dikembangkan oleh: Tim Cyber Security & Bangkah
 
 ## Struktur Folder
 ```

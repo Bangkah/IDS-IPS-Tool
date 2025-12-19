@@ -52,3 +52,11 @@
 2025-12-20 05:23:40 WARNING: [IPS] Blocking IP: 192.168.1.10 | Reason: Failed password | Line: 1 | Dec 20 10:00:00 server sshd[1234]: Failed password for invalid user admin from 192.168.1.10 port 22 ssh2
 2025-12-20 05:23:40 WARNING: [IPS] Blocking IP: 192.168.1.11 | Reason: Invalid user | Line: 2 | Dec 20 10:01:00 server sshd[1235]: Invalid user test from 192.168.1.11 port 22 ssh2
 2025-12-20 05:23:40 WARNING: [IPS] Blocking IP: 192.168.1.12 | Reason: Port scan | Line: 3 | Dec 20 10:02:00 server kernel: Possible port scan detected from 192.168.1.12
+2025-12-20 05:55:13 WARNING: [IDS] {'line': 1, 'pattern': 'Failed password', 'severity': 'high', 'ip': '192.168.1.10', 'content': 'Dec 20 10:00:00 server sshd[1234]: Failed password for invalid user admin from 192.168.1.10 port 22 ssh2'}
+2025-12-20 05:55:13 WARNING: [IDS] {'line': 1, 'pattern': 'Invalid user', 'severity': 'medium', 'ip': '192.168.1.10', 'content': 'Dec 20 10:00:00 server sshd[1234]: Failed password for invalid user admin from 192.168.1.10 port 22 ssh2'}
+2025-12-20 05:55:13 WARNING: [IDS] {'line': 2, 'pattern': 'Invalid user', 'severity': 'medium', 'ip': '192.168.1.11', 'content': 'Dec 20 10:01:00 server sshd[1235]: Invalid user test from 192.168.1.11 port 22 ssh2'}
+2025-12-20 05:55:13 WARNING: [IDS] {'line': 3, 'pattern': 'Port scan', 'severity': 'low', 'ip': '192.168.1.12', 'content': 'Dec 20 10:02:00 server kernel: Possible port scan detected from 192.168.1.12'}
+2025-12-20 05:56:38 WARNING: [IPS] Blocking IP: 192.168.1.10 | Reason: Failed password | Line: 1 | Dec 20 10:00:00 server sshd[1234]: Failed password for invalid user admin from 192.168.1.10 port 22 ssh2
+2025-12-20 05:56:39 WARNING: [IPS] Blocking IP: 192.168.1.11 | Reason: Invalid user | Line: 2 | Dec 20 10:01:00 server sshd[1235]: Invalid user test from 192.168.1.11 port 22 ssh2
+2025-12-20 05:56:39 WARNING: [IPS] Blocking IP: 192.168.1.12 | Reason: Port scan | Line: 3 | Dec 20 10:02:00 server kernel: Possible port scan detected from 192.168.1.12
+2025-12-20 05:56:57 WARNING: [NetIDS] 2025-12-20 05:56:57 | TCP SYN 10.222.214.181:38534 -> 95.216.195.133:80

@@ -4,7 +4,19 @@
 
 # IDS/IPS Tool
 
-![Python](https://img.shields.io/badge/python-3.7%2B-blue) ![License](https://img.shields.io/github/license/Bangkah/IDS-IPS-Tool) ![CI](https://github.com/Bangkah/IDS-IPS-Tool/actions/workflows/python-package.yml/badge.svg)
+
+![Python](https://img.shields.io/badge/python-3.7%2B-blue)
+![License](https://img.shields.io/github/license/Bangkah/IDS-IPS-Tool)
+![CI](https://github.com/Bangkah/IDS-IPS-Tool/actions/workflows/python-package.yml/badge.svg)
+![Tested](https://img.shields.io/badge/tested-passed-brightgreen)
+
+---
+
+> **Status: Semua fitur telah diuji dan lulus!**
+> - IDS, IPS, Network IDS, Dashboard Web, dan Unit Test berjalan normal.
+> - Dashboard: chart, live feed, kontrol panel, edit config, unblock IP valid.
+> - Siap digunakan, dikembangkan, dan dipresentasikan.
+
 
 ---
 

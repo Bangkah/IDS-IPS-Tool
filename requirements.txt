@@ -1,3 +1,17 @@
+
+# Core
 scapy
 watchdog
 notify2
+
+# Dashboard (FastAPI, Jinja2, Uvicorn)
+fastapi
+uvicorn
+jinja2
+
+# Untuk logging rotating
+# (sudah built-in di Python, tidak perlu install logging)
+
+# Untuk testing (opsional, jika ingin environment siap test)
+pytest
+unittest2

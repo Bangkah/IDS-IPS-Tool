@@ -1,0 +1,3 @@
+include dashboard/templates/*.html
+include dashboard/static/*.css
+include dashboard/static/*.js

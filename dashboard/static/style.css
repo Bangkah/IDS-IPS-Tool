@@ -1,0 +1,175 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #eaf6ff 0%, #f8fafd 100%);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 2em;
+    color: #1565c0;
+    letter-spacing: 1px;
+    font-size: 2.3em;
+    font-weight: 700;
+    text-shadow: 0 2px 8px #e3eaf7;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 2em;
+    margin: 2.5em auto 0 auto;
+    max-width: 1200px;
+    padding: 0 2em;
+}
+
+.card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(44,62,80,0.10);
+    padding: 1.7em 1.3em 1.3em 1.3em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 220px;
+    transition: box-shadow 0.2s;
+}
+.card:hover {
+    box-shadow: 0 8px 32px rgba(44,62,80,0.16);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #1976d2;
+    margin-bottom: 1em;
+    font-size: 1.25em;
+    font-weight: 600;
+}
+
+#topIpList {
+    padding-left: 1.2em;
+    margin: 0;
+}
+
+#topIpList li {
+    margin-bottom: 0.3em;
+    font-size: 1.08em;
+    color: #263238;
+}
+
+#statusSniffer, #statusIPS {
+    font-weight: bold;
+    color: #388e3c;
+}
+
+#statusIPS {
+    color: #d84315;
+}
+
+#liveFeed {
+    border-radius: 8px;
+    margin-top: 0.5em;
+    background: #23272f;
+    color: #e3eaf7;
+    font-family: 'Fira Mono', 'Consolas', monospace;
+    font-size: 1em;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+}
+
+#unblockForm input[type="text"] {
+    padding: 0.45em 0.8em;
+    border-radius: 6px;
+    border: 1px solid #b0bec5;
+    margin-right: 0.5em;
+    font-size: 1em;
+    background: #f7fbff;
+    transition: border 0.2s;
+}
+#unblockForm input[type="text"]:focus {
+    border: 1.5px solid #1976d2;
+    outline: none;
+}
+
+#unblockForm button, #editConfigBtn, #saveConfigBtn {
+    background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.55em 1.3em;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 0.5em;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+#unblockForm button:hover, #editConfigBtn:hover, #saveConfigBtn:hover {
+    background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
+    box-shadow: 0 4px 16px rgba(44,62,80,0.14);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    background: rgba(44,62,80,0.18);
+}
+
+.modal-content {
+    background: #fff;
+    margin: 7% auto;
+    padding: 2em 1.5em 1.5em 1.5em;
+    border-radius: 14px;
+    width: 95%;
+    max-width: 500px;
+    box-shadow: 0 4px 24px rgba(44,62,80,0.18);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.close {
+    position: absolute;
+    right: 1.2em;
+    top: 1.2em;
+    font-size: 1.7em;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.close:hover {
+    color: #1976d2;
+}
+
+#configTextarea {
+    font-family: 'Fira Mono', 'Consolas', monospace;
+    font-size: 1em;
+    border-radius: 6px;
+    border: 1px solid #b0bec5;
+    background: #f7fbff;
+    margin-bottom: 1em;
+    padding: 0.7em;
+    min-height: 120px;
+    resize: vertical;
+}
+
+@media (max-width: 700px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        padding: 0 0.5em;
+    }
+    .modal-content {
+        padding: 1em 0.5em 1em 0.5em;
+    }
+    h1 {
+        font-size: 1.4em;
+    }
+}

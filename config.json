@@ -1,0 +1,13 @@
+{
+  "patterns": [
+    {"name": "Failed password", "regex": "Failed password.*from ([\\d.]+)", "severity": "high"},
+    {"name": "Invalid user", "regex": "Invalid user.*from ([\\d.]+)", "severity": "medium"},
+    {"name": "Port scan", "regex": "Possible port scan.*from ([\\d.]+)", "severity": "low"}
+  ],
+  "log_file": "ids_ips.log",
+  "net_patterns": [
+    {"name": "TCP SYN Scan", "type": "tcp_syn"},
+    {"name": "ICMP Echo", "type": "icmp_echo"},
+    {"name": "ICMP Regex", "type": "ip_regex", "regex": "ICMP echo-request"}
+  ]
+}

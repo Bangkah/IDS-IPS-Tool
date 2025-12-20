@@ -1,13 +1,20 @@
 
 # Clean entry point for modular FastAPI app
 from fastapi import FastAPI
+
 from dashboard.core.logging import setup_logging
 from dashboard.core.middleware import IPAllowlistMiddleware, SecureHeadersMiddleware
+from dashboard.core.rate_limit import limiter
+from slowapi.errors import RateLimitExceeded
+from slowapi import _rate_limit_exceeded_handler
 from dashboard.routers import auth, alerts, stats, config_api, system, ml
 
 setup_logging()
 
+
 app = FastAPI(title="IDS/IPS Dashboard")
+app.state.limiter = limiter
+app.add_exception_handler(429, _rate_limit_exceeded_handler)
 
 app.add_middleware(IPAllowlistMiddleware)
 app.add_middleware(SecureHeadersMiddleware)

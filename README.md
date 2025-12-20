@@ -1,3 +1,4 @@
+
 # IDS/IPS Tool
 
 
@@ -8,10 +9,23 @@
 
 ---
 
-> **Status: Semua fitur telah diuji dan lulus!**
-> - IDS, IPS, Network IDS, Dashboard Web, dan Unit Test berjalan normal.
-> - Dashboard: chart, live feed, kontrol panel, edit config, unblock IP valid.
-> - Siap digunakan, dikembangkan, dan dipresentasikan.
+
+> **Status: SEDANG REFAKTOR BESAR DASHBOARD**
+> - Struktur dashboard FastAPI sudah dipecah modular (core, routers, services, websocket).
+> - Namun, masih ada beberapa masalah kompatibilitas dan error runtime (misal: Limiter not defined, bcrypt/passlib, dsb).
+> - Jika Anda mencoba menjalankan dashboard dan mendapat error, cek bagian Troubleshooting di bawah.
+> - Fitur IDS, IPS CLI, dan firewall tetap stabil. Dashboard web dalam proses stabilisasi.
+---
+
+## ⚠️ Known Issues (Des 2025)
+
+- **Dashboard FastAPI**: Masih ada error Limiter not defined, error bcrypt/passlib di Python 3.13, dan beberapa import error jika struktur belum lengkap.
+- **bcrypt/passlib**: Pastikan gunakan bcrypt >=4.1.2. Jika error, uninstall bcrypt lalu install versi terbaru.
+- **Limiter/rate limit**: Jika error `Limiter not defined`, pastikan slowapi sudah terinstall dan import Limiter di file yang tepat.
+- **Modularisasi**: Semua folder dashboard/core, dashboard/routers, dashboard/services, dashboard/websocket wajib ada file __init__.py.
+- **Struktur baru**: Dokumentasi dan instruksi masih dalam proses update agar sesuai arsitektur baru.
+
+Jika menemukan error baru, silakan laporkan via GitHub Issue atau cek FAQ/Troubleshooting di bawah.
 
 
 ---

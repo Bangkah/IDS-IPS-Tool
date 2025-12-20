@@ -65,6 +65,21 @@ Thumbs.db
 # Logs
 *.log
 ids_ips.log*
+# Legacy/obsolete scripts (migrated to src/)
+ids.py
+ips.py
+firewall.py
+netids.py
+
+# Remove legacy log files
+*.log.1
+*.log.2
+*.log.3
+
+# Remove legacy build artifacts
+*.bak
+*.swp
+*~
 
 # Docker
 *.pid

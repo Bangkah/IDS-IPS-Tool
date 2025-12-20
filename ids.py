@@ -1,4 +1,4 @@
-
+// File removed: legacy, all logic migrated to src/ids.py
 import re
 import sys
 

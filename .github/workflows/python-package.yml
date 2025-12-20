@@ -10,10 +10,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        python-version: [3.8, 3.9, 3.10, 3.11]
+        fail-fast: false
+        matrix:
+          python-version: [3.7, 3.8, 3.9, 3.10, 3.11, 3.12]
     steps:
     - uses: actions/checkout@v4
+      - name: Clean up build/log artifacts
+        run: |
+          rm -rf __pycache__ build dist *.log ids_ips.log* || true
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:

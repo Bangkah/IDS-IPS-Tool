@@ -5,6 +5,21 @@ from collections import Counter, defaultdict
 
 router = APIRouter(prefix="/api", tags=["stats"])
 
+@router.get("/signatures")
+def get_signatures():
+    cfg_path = os.path.abspath("config.json")
+    if not os.path.exists(cfg_path):
+        return []
+    with open(cfg_path) as f:
+        cfg = json.load(f)
+    return cfg.get("patterns", [])
+from fastapi import APIRouter, Depends
+from dashboard.core.security import authenticate
+import os, json, datetime
+from collections import Counter, defaultdict
+
+router = APIRouter(prefix="/api", tags=["stats"])
+
 @router.get("/stats")
 def get_stats():
     log_path = os.path.abspath("ids_ips.log")

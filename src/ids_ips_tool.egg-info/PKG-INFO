@@ -1,0 +1,27 @@
+Metadata-Version: 2.4
+Name: ids-ips-tool
+Version: 1.0.1
+Summary: Modular IDS/IPS Tool with Real-time Dashboard
+Home-page: https://github.com/Bangkah/IDS-IPS-Tool
+Author: Bangkah
+Author-email: mdhyaulatha@gmail.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+License-File: LICENSE
+Requires-Dist: scapy
+Requires-Dist: watchdog
+Requires-Dist: notify2
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+Requires-Dist: jinja2
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary

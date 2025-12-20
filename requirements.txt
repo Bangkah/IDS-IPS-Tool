@@ -1,16 +1,31 @@
 
+
 # Core
 scapy
 watchdog
 notify2
 
-# Dashboard (FastAPI, Jinja2, Uvicorn)
+# Dashboard & API
 fastapi
 uvicorn
 jinja2
+starlette
+slowapi
 
-# Untuk logging rotating
-# (sudah built-in di Python, tidak perlu install logging)
+# Security & Auth
+pyotp
+python-jose
+passlib
+python-multipart
+
+# Data & ML
+pandas
+numpy
+scikit-learn
+scipy
+
+# HTTP & Utils
+requests
 
 # Untuk testing (opsional, jika ingin environment siap test)
 pytest

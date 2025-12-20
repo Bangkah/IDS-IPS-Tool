@@ -10,7 +10,8 @@ class TestIDS(unittest.TestCase):
             ],
             "log_file": "test.log"
         }
-        self.ids = IDS(self.config)
+        # Disable rule engine by passing a non-existent rules_path
+        self.ids = IDS(self.config, rules_path=None)
 
     def test_analyze_line(self):
         line = "attack from 1.2.3.4 detected"

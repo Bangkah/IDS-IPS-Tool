@@ -19,9 +19,7 @@ def load_log_data():
     return df
 
 @router.get('/api/analytics/anomaly')
-async def anomaly_detection(current_user=None):
-    from .app import get_current_active_user, User
-    current_user = await get_current_active_user()
+async def anomaly_detection():
     df = load_log_data()
     model = IsolationForest(contamination=0.05, random_state=42)
     df['anomaly'] = model.fit_predict(df[['attacks']])
@@ -33,9 +31,7 @@ async def anomaly_detection(current_user=None):
     }
 
 @router.get('/api/analytics/trend')
-async def attack_trend(current_user=None):
-    from .app import get_current_active_user, User
-    current_user = await get_current_active_user()
+async def attack_trend():
     df = load_log_data()
     trend = df['attacks'].rolling(window=7, min_periods=1).mean().tolist()
     return {
@@ -45,9 +41,7 @@ async def attack_trend(current_user=None):
     }
 
 @router.get('/api/analytics/predict')
-async def predict_attacks(current_user=None):
-    from .app import get_current_active_user, User
-    current_user = await get_current_active_user()
+async def predict_attacks():
     df = load_log_data()
     # Simple forecast: last value + noise
     last = df['attacks'].iloc[-1]

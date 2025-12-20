@@ -1,10 +1,12 @@
 ---
 
+
 ## 🙏 Catatan Pengembang
 
-Saya mengalami beberapa kesulitan dalam proses refaktor besar dashboard FastAPI ini (terutama terkait modularisasi, rate limit, dan kompatibilitas bcrypt/passlib di Python 3.13). Jika Anda menemukan solusi atau ingin membantu, kontribusi dan saran sangat saya harapkan! Silakan buat issue, pull request, atau kontak langsung jika ingin berdiskusi atau membantu memperbaiki masalah.
+Proyek ini sedang dalam proses refaktor besar, terutama pada bagian dashboard FastAPI (modularisasi, rate limit, dan kompatibilitas bcrypt/passlib di Python 3.13). Jika Anda menemukan solusi atau ingin membantu, kontribusi dan saran sangat diharapkan! Silakan buat issue, pull request, atau kontak langsung jika ingin berdiskusi atau membantu memperbaiki masalah.
 
 # IDS/IPS Tool
+
 
 
 ![Python](https://img.shields.io/badge/python-3.7%2B-blue)
@@ -16,11 +18,12 @@ Saya mengalami beberapa kesulitan dalam proses refaktor besar dashboard FastAPI 
 
 
 > **Status: SEDANG REFAKTOR BESAR DASHBOARD**
-> - Struktur dashboard FastAPI sudah dipecah modular (core, routers, services, websocket).
-> - Namun, masih ada beberapa masalah kompatibilitas dan error runtime (misal: Limiter not defined, bcrypt/passlib, dsb).
-> - Jika Anda mencoba menjalankan dashboard dan mendapat error, cek bagian Troubleshooting di bawah.
+> - Struktur dashboard FastAPI sudah modular (core, routers, services, websocket).
+> - Beberapa masalah kompatibilitas dan error runtime (misal: Limiter not defined, bcrypt/passlib, dsb) masih dalam perbaikan.
+> - Jika Anda mengalami error saat menjalankan dashboard, cek bagian Troubleshooting di bawah.
 > - Fitur IDS, IPS CLI, dan firewall tetap stabil. Dashboard web dalam proses stabilisasi.
 ---
+
 
 ## ⚠️ Known Issues (Des 2025)
 
@@ -35,9 +38,10 @@ Jika menemukan error baru, silakan laporkan via GitHub Issue atau cek FAQ/Troubl
 
 ---
 
+
 ## 🛡️ Overview
 
-**IDS/IPS Tool** adalah sistem modular deteksi dan pencegahan serangan (Intrusion Detection & Prevention System) berbasis Python. Mendukung analisis file log, monitoring real-time, network sniffer (Suricata-like), serta dashboard web real-time untuk visualisasi dan kontrol.
+**IDS/IPS Tool** adalah sistem modular deteksi dan pencegahan serangan (Intrusion Detection & Prevention System) berbasis Python. Mendukung analisis file log, monitoring real-time, network sniffer (Suricata-like), serta dashboard web real-time untuk visualisasi dan kontrol. Proyek ini cocok untuk pembelajaran, riset, dan penggunaan di lingkungan kecil hingga menengah.
 
 ---
 
@@ -58,6 +62,7 @@ Jika menemukan error baru, silakan laporkan via GitHub Issue atau cek FAQ/Troubl
   - Tidak akan memblokir IP yang sudah diblokir (deteksi duplikat)
   - Unblock presisi (khusus nftables: by handle)
   - Output list rules lebih mudah dibaca
+  - Error handling dan feedback ke user lebih jelas
   - Error handling dan feedback ke user lebih jelas
 
 ---
@@ -139,35 +144,33 @@ ids_ips_tool/
 
 ## ⚙️ Instalasi
 
-
 1. **Pastikan Python 3.7+ dan pip sudah terpasang**
 
 2. **(Rekomendasi) Buat dan aktifkan virtual environment:**
-  ```bash
-  python3 -m venv .venv
-  # Aktifkan venv (Linux/macOS)
-  source .venv/bin/activate
-  # atau jika menggunakan fish shell:
-  source .venv/bin/activate.fish
-  # Aktifkan venv (Windows)
-  .venv\Scripts\activate
-  ```
+   ```bash
+   python3 -m venv .venv
+   # Aktifkan venv (Linux/macOS)
+   source .venv/bin/activate
+   # atau jika menggunakan fish shell:
+   source .venv/bin/activate.fish
+   # Aktifkan venv (Windows)
+   .venv\Scripts\activate
+   ```
 
 3. **Install dependensi:**
-  ```bash
-  pip install -r requirements.txt
-  pip install uvicorn  # pastikan uvicorn terinstall di venv
-  ```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 4. **(Opsional) Install notifikasi desktop:**
-  ```bash
-  pip install notify2
-  ```
+   ```bash
+   pip install notify2
+   ```
 
 5. **(Opsional) Untuk real-time monitoring:**
-  ```bash
-  pip install watchdog
-  ```
+   ```bash
+   pip install watchdog
+   ```
 
 ### Instalasi langsung sebagai package dari GitHub
 
@@ -302,8 +305,8 @@ python -m firewall.firewall_main --block 1.2.3.4 --backend nftables
 
 ---
 
-## 🌐 Dashboard Web (Real-time)
 
+## 🌐 Dashboard Web (Real-time)
 
 ### Menjalankan Dashboard
 ```bash
@@ -317,7 +320,7 @@ Jika muncul error `uvicorn: command not found`, pastikan Anda sudah mengaktifkan
 Jika tetap error, coba jalankan dengan path lengkap:
 ```bash
 .venv/bin/uvicorn dashboard.app:app --reload
-atau
+# atau
 python -m uvicorn dashboard.app:app --reload
 ```
 
@@ -331,6 +334,7 @@ python -m uvicorn dashboard.app:app --reload
 
 ---
 
+
 ## 🧪 Pengujian
 
 Jalankan semua unit test:
@@ -339,6 +343,7 @@ python -m unittest discover tests
 ```
 
 ---
+
 
 ## 🛠️ Kustomisasi & Pengembangan
 
@@ -386,11 +391,13 @@ python -m unittest discover tests
 
 ---
 
+
 ## 📄 Lisensi
 
 Proyek ini berlisensi MIT. Lihat file LICENSE untuk detail.
 
 ---
+
 
 ## 👨‍💻 Kontributor & Kredit
 

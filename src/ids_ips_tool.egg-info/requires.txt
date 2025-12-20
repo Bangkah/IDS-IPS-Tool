@@ -1,0 +1,6 @@
+scapy
+watchdog
+notify2
+fastapi
+uvicorn
+jinja2

@@ -1,0 +1,4 @@
+[console_scripts]
+ids_main = ids_main:main
+ips_main = ips_main:main
+netids_main = netids_main:main

@@ -31,12 +31,19 @@
 
 Proyek ini sedang dalam proses refaktor besar, terutama pada bagian dashboard FastAPI (modularisasi, rate limit, dan kompatibilitas bcrypt/passlib di Python 3.13). Jika Anda menemukan solusi atau ingin membantu, kontribusi dan saran sangat diharapkan! Silakan buat issue, pull request, atau kontak langsung jika ingin berdiskusi atau membantu memperbaiki masalah.
 
-# IDS/IPS Tool
+<p align="left">
+  <img src="https://img.shields.io/badge/python-3.7%2B-blue" alt="Python Version">
+  <img src="https://img.shields.io/github/license/Bangkah/IDS-IPS-Tool" alt="License">
+  <img src="https://github.com/Bangkah/IDS-IPS-Tool/actions/workflows/python-package.yml/badge.svg" alt="CI">
+  <img src="https://codecov.io/gh/Bangkah/IDS-IPS-Tool/branch/main/graph/badge.svg" alt="Codecov"/>
+  <img src="https://img.shields.io/badge/tested-passed-brightgreen" alt="Tested">
+  <img src="https://img.shields.io/docker/pulls/bangkah/ids-ips-tool?style=flat-square" alt="Docker Pulls">
+  <img src="https://img.shields.io/pypi/v/ids-ips-tool?color=blue" alt="PyPI">
+</p>
 
-![Python](https://img.shields.io/badge/python-3.7%2B-blue)
-![License](https://img.shields.io/github/license/Bangkah/IDS-IPS-Tool)
-![CI](https://github.com/Bangkah/IDS-IPS-Tool/actions/workflows/python-package.yml/badge.svg)
-![Tested](https://img.shields.io/badge/tested-passed-brightgreen)
+<div align="left">
+<b>IDS/IPS Tool</b> adalah sistem modular deteksi dan pencegahan serangan (Intrusion Detection & Prevention System) berbasis Python. Mendukung analisis file log, monitoring real-time, network sniffer (Suricata-like), serta firewall CLI. Cocok untuk pembelajaran, riset, dan penggunaan di lingkungan kecil hingga menengah.
+</div>
 
 ---
 

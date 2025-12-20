@@ -1,3 +1,8 @@
+---
+
+## 🙏 Catatan Pengembang
+
+Saya mengalami beberapa kesulitan dalam proses refaktor besar dashboard FastAPI ini (terutama terkait modularisasi, rate limit, dan kompatibilitas bcrypt/passlib di Python 3.13). Jika Anda menemukan solusi atau ingin membantu, kontribusi dan saran sangat saya harapkan! Silakan buat issue, pull request, atau kontak langsung jika ingin berdiskusi atau membantu memperbaiki masalah.
 
 # IDS/IPS Tool
 

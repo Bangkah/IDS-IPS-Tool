@@ -1,3 +1,6 @@
 include dashboard/templates/*.html
 include dashboard/static/*.css
 include dashboard/static/*.js
+recursive-include src *
+recursive-include firewall *
+recursive-include dashboard *

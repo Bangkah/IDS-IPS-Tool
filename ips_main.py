@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 from src.config import load_config
 from src.ips import IPS

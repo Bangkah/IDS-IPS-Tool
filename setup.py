@@ -7,8 +7,12 @@ setup(
     author="Bangkah",
     author_email="mdhyaulatha@gmail.com",
     url="https://github.com/Bangkah/IDS-IPS-Tool",
-    packages=find_packages(where="src"),
-    package_dir={"": "src"},
+    packages=(
+        find_packages(where="src") +
+        find_packages(where="dashboard", include=["dashboard", "dashboard.*"]) +
+        find_packages(where="firewall", include=["firewall", "firewall.*"])
+    ),
+    package_dir={"": "src", "dashboard": "dashboard", "firewall": "firewall"},
     install_requires=[
         "scapy",
         "watchdog",
@@ -19,19 +23,13 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "ids_main=ids_main:main",
-            "ips_main=ips_main:main",
-            "netids_main=netids_main:main"
+            "ids=src.ids_main:main",
+            "ips=src.ips_main:main",
+            "netids=src.netids_main:main",
+            "firewall=firewall.firewall_main:main"
         ]
     },
     include_package_data=True,
-    package_data={
-        "": [
-            "../dashboard/templates/*.html",
-            "../dashboard/static/*.css",
-            "../dashboard/static/*.js",
-        ]
-    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",

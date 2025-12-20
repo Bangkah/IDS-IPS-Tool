@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ids-ips-tool
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ids-ips-tool
+  template:
+    metadata:
+      labels:
+        app: ids-ips-tool
+    spec:
+      containers:
+        - name: ids-ips-tool
+          image: ids-ips-tool:latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN"]
+          volumeMounts:
+            - name: log-volume
+              mountPath: /app
+          tty: true
+          stdin: true
+      volumes:
+        - name: log-volume
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ids-ips-tool
+spec:
+  selector:
+    app: ids-ips-tool
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

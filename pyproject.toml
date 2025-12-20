@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ids-ips-tool"
+version = "1.0.1"
+description = "Modular IDS/IPS Tool with Real-time Dashboard"
+authors = [
+    { name = "Bangkah", email = "mdhyaulatha@gmail.com" }
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "scapy",
+    "watchdog",
+    "notify2",
+    "fastapi",
+    "uvicorn",
+    "jinja2"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src", "dashboard" = "dashboard", "firewall" = "firewall"}
+include-package-data = true

@@ -1,4 +1,35 @@
+
 # Panduan Kontribusi
+## Good First Issue
+- Tambahkan support untuk Alpine Linux
+- Perbaiki deteksi backend firewall otomatis
+- Tambahkan notifikasi via Telegram/Slack
+- Tambahkan contoh serangan di DEMO.md
+## Setup Dev Environment
+1. Clone repo: `git clone https://github.com/Bangkah/IDS-IPS-Tool.git`
+2. Buat virtualenv: `python3 -m venv .venv && source .venv/bin/activate`
+3. Install dep: `pip install -r requirements.txt`
+4. Jalankan test: `python -m unittest discover tests`
+## Template Issue
+
+**Deskripsi masalah/fitur:**
+
+**Langkah reproduksi:**
+1. ...
+2. ...
+
+**Log/error:**
+
+**Lingkungan:**
+- OS: ...
+- Python: ...
+## Template Pull Request
+
+**Ringkasan perubahan:**
+
+- [ ] Sudah lulus unit test
+- [ ] Sudah update dokumentasi jika perlu
+- [ ] Tidak ada merge conflict
 
 Terima kasih ingin berkontribusi pada proyek IDS/IPS Tool!
 

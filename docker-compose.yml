@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  ids-ips:
+    build: .
+    container_name: ids-ips-tool
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    tty: true
+    stdin_open: true
+    # Contoh: jalankan bash, user bisa eksekusi python -m ids_main dst di dalam container
+    command: bash
+    # Untuk mode otomatis, bisa ganti command misal:
+    # command: python -m ids_main config.json sample.log

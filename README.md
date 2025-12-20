@@ -1,3 +1,29 @@
+## ☸️ Jalankan di Kubernetes
+
+1. Build Docker image dan push ke registry yang bisa diakses cluster (misal Docker Hub):
+  ```bash
+  docker build -t username/ids-ips-tool:latest .
+  docker push username/ids-ips-tool:latest
+  # Ganti 'username' sesuai akun Docker Hub Anda
+  ```
+2. Edit file `k8s-ids-ips.yaml`, ganti bagian `image: ids-ips-tool:latest` menjadi `image: username/ids-ips-tool:latest`
+3. Deploy ke cluster:
+  ```bash
+  kubectl apply -f k8s-ids-ips.yaml
+  kubectl get pods
+  kubectl exec -it <nama-pod> -- bash
+  # Jalankan IDS/IPS di dalam pod:
+  ./ids_main.py config.json sample.log
+  # atau
+  python ids_main.py config.json sample.log
+  ```
+> **Troubleshooting Kubernetes**
+> - Jika error permission: chmod +x ids_main.py sebelum build image
+> - Untuk volume log: gunakan emptyDir untuk dev/testing, hostPath untuk production (pastikan path benar di node)
+> - Jika modul tidak ditemukan: pastikan jalankan dari /app atau root project di dalam pod
+4. Mount log hostPath sesuai kebutuhan (edit path di yaml)
+
+---
 ---
 
 
@@ -7,8 +33,6 @@ Proyek ini sedang dalam proses refaktor besar, terutama pada bagian dashboard Fa
 
 # IDS/IPS Tool
 
-
-
 ![Python](https://img.shields.io/badge/python-3.7%2B-blue)
 ![License](https://img.shields.io/github/license/Bangkah/IDS-IPS-Tool)
 ![CI](https://github.com/Bangkah/IDS-IPS-Tool/actions/workflows/python-package.yml/badge.svg)
@@ -16,48 +40,80 @@ Proyek ini sedang dalam proses refaktor besar, terutama pada bagian dashboard Fa
 
 ---
 
-
-> **Status: SEDANG REFAKTOR BESAR DASHBOARD**
-> - Struktur dashboard FastAPI sudah modular (core, routers, services, websocket).
-> - Beberapa masalah kompatibilitas dan error runtime (misal: Limiter not defined, bcrypt/passlib, dsb) masih dalam perbaikan.
-> - Jika Anda mengalami error saat menjalankan dashboard, cek bagian Troubleshooting di bawah.
-> - Fitur IDS, IPS CLI, dan firewall tetap stabil. Dashboard web dalam proses stabilisasi.
----
-
-
-## ⚠️ Known Issues (Des 2025)
-
-- **Dashboard FastAPI**: Masih ada error Limiter not defined, error bcrypt/passlib di Python 3.13, dan beberapa import error jika struktur belum lengkap.
-- **bcrypt/passlib**: Pastikan gunakan bcrypt >=4.1.2. Jika error, uninstall bcrypt lalu install versi terbaru.
-- **Limiter/rate limit**: Jika error `Limiter not defined`, pastikan slowapi sudah terinstall dan import Limiter di file yang tepat.
-- **Modularisasi**: Semua folder dashboard/core, dashboard/routers, dashboard/services, dashboard/websocket wajib ada file __init__.py.
-- **Struktur baru**: Dokumentasi dan instruksi masih dalam proses update agar sesuai arsitektur baru.
-
-Jika menemukan error baru, silakan laporkan via GitHub Issue atau cek FAQ/Troubleshooting di bawah.
-
+> **[WIP] Dashboard**
+> 
+> Fitur dashboard web (FastAPI/Streamlit) sedang dalam pengembangan dan belum stabil. Dokumentasi dan instruksi dashboard untuk sementara disembunyikan agar fokus pada fitur CLI yang sudah stabil. Silakan cek milestone atau issue [WIP] Dashboard di repo untuk update progres.
 
 ---
 
+
+## ✅ Diuji di
+- Ubuntu 22.04 (nftables default)
+- Debian 12 (iptables)
+- Arch Linux (ufw)
+
+## ⚠️ Belum diuji di
+- CentOS/RHEL
+- Alpine Linux
+- Windows (WSL mungkin bekerja, tapi tidak didukung resmi)
+
+---
 
 ## 🛡️ Overview
 
-**IDS/IPS Tool** adalah sistem modular deteksi dan pencegahan serangan (Intrusion Detection & Prevention System) berbasis Python. Mendukung analisis file log, monitoring real-time, network sniffer (Suricata-like), serta dashboard web real-time untuk visualisasi dan kontrol. Proyek ini cocok untuk pembelajaran, riset, dan penggunaan di lingkungan kecil hingga menengah.
+**IDS/IPS Tool** adalah sistem modular deteksi dan pencegahan serangan (Intrusion Detection & Prevention System) berbasis Python. Mendukung analisis file log, monitoring real-time, network sniffer (Suricata-like), serta firewall CLI. Proyek ini cocok untuk pembelajaran, riset, dan penggunaan di lingkungan kecil hingga menengah.
 
 ---
 
-## 🚀 Fitur Utama
+
+## 🛠️ Use Case Nyata
+
+### 1. Lindungi Server Pribadi
+- Jalankan `./ips_main.py config.json /var/log/auth.log`
+- Atau: `python ips_main.py config.json /var/log/auth.log`
+- Otomatis blokir brute-force SSH.
+
+
+- Tambahkan pola regex untuk SQLi/XSS di `config.json`
+- Jalankan IDS real-time di log Nginx/Apache:
+  ```bash
+  ./ids_main.py config.json /var/log/nginx/access.log --realtime
+  # atau
+  python ids_main.py config.json /var/log/nginx/access.log --realtime
+  ```
+- **Catatan:** Jika file log tidak ditemukan, gunakan file log lain yang tersedia, atau buat file dummy (misal: `touch sample.log`) untuk simulasi.
+
+### 3. Edukasi Cybersecurity
+- Gunakan di lab kampus untuk deteksi serangan simulasi.
+
 
 - **IDS (Intrusion Detection System):** Deteksi serangan dari file log
 - **IPS (Intrusion Prevention System):** Pencegahan otomatis, blokir IP via iptables, nftables, atau ufw (kompatibel dengan banyak distro Linux modern)
 - **Real-time Monitoring:** Pantau file log secara langsung (dengan watchdog)
 - **Network IDS:** Sniffer multi-interface, mirip Suricata
-- **Statistik & Visualisasi:** Statistik otomatis, dashboard web real-time (FastAPI + Chart.js)
 - **Rotating Logging:** Log otomatis bergulir
 - **Notifikasi Desktop:** Opsional, via notify2
 - **Konfigurasi Mudah:** Semua pola dan pengaturan di `config.json`
 - **Unit Test:** Pengujian mudah dengan unittest
 - **Firewall Tool (Terpisah):**
   - Manajemen blokir/unblock IP dan list rules untuk iptables, nftables, ufw melalui CLI terpisah (firewall/)
+  - Validasi IP otomatis sebelum blokir
+  - Tidak akan memblokir IP yang sudah diblokir (deteksi duplikat)
+  - Unblock presisi (khusus nftables: by handle)
+  - Output list rules lebih mudah dibaca
+  - Error handling dan feedback ke user lebih jelas
+
+---
+
+## ⚠️ Known Issues (Des 2025)
+
+- **Dashboard FastAPI**: [WIP] Tidak stabil, fitur dashboard dinonaktifkan sementara dari dokumentasi utama.
+- **bcrypt/passlib**: Pastikan gunakan bcrypt >=4.1.2. Jika error, uninstall bcrypt lalu install versi terbaru.
+- **Limiter/rate limit**: Jika error `Limiter not defined`, pastikan slowapi sudah terinstall dan import Limiter di file yang tepat.
+- **Modularisasi**: Semua folder dashboard/core, dashboard/routers, dashboard/services, dashboard/websocket wajib ada file __init__.py.
+- **Struktur baru**: Dokumentasi dan instruksi masih dalam proses update agar sesuai arsitektur baru.
+
+Jika menemukan error baru, silakan laporkan via GitHub Issue atau cek FAQ/Troubleshooting di bawah.
   - Validasi IP otomatis sebelum blokir
   - Tidak akan memblokir IP yang sudah diblokir (deteksi duplikat)
   - Unblock presisi (khusus nftables: by handle)
@@ -139,6 +195,34 @@ ids_ips_tool/
 - **firewall/**: Tool terpisah untuk manajemen firewall melalui CLI
 - **config.json**: Pola deteksi, pengaturan log, dsb
 - **Log File**: Semua event dicatat ke `ids_ips.log` (default)
+
+---
+
+
+## 🐳 Jalankan dengan Docker
+
+docker run --rm -it --cap-add=NET_ADMIN -v $(pwd):/app ids-ips-tool
+### Build & Run Manual
+```bash
+docker build -t ids-ips-tool .
+docker run --rm -it --cap-add=NET_ADMIN -v $(pwd):/app ids-ips-tool
+# Setelah masuk container, jalankan:
+./ids_main.py config.json sample.log
+# atau
+python ids_main.py config.json sample.log
+```
+
+### Docker Compose (Rekomendasi)
+```bash
+docker compose up --build
+# Container akan masuk bash, jalankan:
+./ids_main.py config.json sample.log
+# atau
+python ids_main.py config.json sample.log
+```
+> **Troubleshooting Docker**
+> - Jika permission denied: pastikan file sudah chmod +x sebelum build, atau gunakan python ...
+> - Untuk log hostPath: pastikan path di -v sudah benar dan file log ada di dalam /app
 
 ---
 
@@ -232,17 +316,23 @@ Jika Anda menggunakan distro modern (Ubuntu 22.04+, Debian 12+, Fedora, dsb), ba
 
 ### 1. IDS (Analisis File Log)
 ```bash
+./ids_main.py config.json sample.log
+# atau
 python ids_main.py config.json sample.log
 ```
 
 ### 2. IDS Real-time (Seperti Antivirus)
 ```bash
+./ids_main.py config.json /var/log/auth.log --realtime
+# atau
 python ids_main.py config.json /var/log/auth.log --realtime
 ```
 > **Catatan:** Pastikan file log yang dimonitor benar-benar ada. Jika file tidak ditemukan, gunakan file log lain yang tersedia, misal sample.log atau log lain yang ingin Anda monitor.
 
 ### 3. IPS (Blokir IP Otomatis, Multi-Firewall)
 ```bash
+./ips_main.py config.json sample.log
+# atau
 python ips_main.py config.json sample.log
 ```
 Ganti `sample.log` dengan file log yang ingin Anda analisis.
@@ -306,31 +396,12 @@ python -m firewall.firewall_main --block 1.2.3.4 --backend nftables
 ---
 
 
+
 ## 🌐 Dashboard Web (Real-time)
 
-### Menjalankan Dashboard
-```bash
-# Pastikan sudah mengaktifkan virtual environment (lihat bagian Instalasi di atas)
-uvicorn dashboard.app:app --reload
-# Buka browser ke http://127.0.0.1:8000
-```
-
-Jika muncul error `uvicorn: command not found`, pastikan Anda sudah mengaktifkan virtual environment dan sudah menjalankan `pip install uvicorn` di venv yang aktif.
-
-Jika tetap error, coba jalankan dengan path lengkap:
-```bash
-.venv/bin/uvicorn dashboard.app:app --reload
-# atau
-python -m uvicorn dashboard.app:app --reload
-```
-
-### Fitur Dashboard
-- Statistik serangan (bar chart)
-- Jenis serangan (pie chart)
-- Top 5 IP penyerang
-- Status IDS/IPS
-- Live feed real-time (WebSocket)
-- Kontrol panel: unblock IP, edit config.json
+> **[WIP] Dashboard**
+> 
+> Fitur dashboard web (FastAPI/Streamlit) sedang dalam pengembangan dan belum stabil. Dokumentasi dan instruksi dashboard untuk sementara disembunyikan agar fokus pada fitur CLI yang sudah stabil. Silakan cek milestone atau issue [WIP] Dashboard di repo untuk update progres.
 
 ---
 
@@ -363,6 +434,8 @@ python -m unittest discover tests
   Ya, modifikasi `src/alert.py`.
 - **Bagaimana menambah test?**  
   Tambahkan file `test_*.py` di folder `tests/`.
+- **Bagaimana menjalankan IDS/IPS langsung?**  
+  Gunakan `./ids_main.py ...` atau `./ips_main.py ...` (pastikan sudah chmod +x). Alternatif: `python ids_main.py ...`.
 - **Bagaimana mengubah port dashboard?**  
   Jalankan uvicorn dengan argumen `--port`, contoh: `uvicorn dashboard.app:app --reload --port 8080`
 - **Bagaimana menambah/menghapus fitur dashboard?**  
@@ -380,14 +453,15 @@ python -m unittest discover tests
   Abaikan, atau tambahkan file `favicon.ico` ke `dashboard/static/`.
 - **FileNotFoundError saat IDS real-time?**  
   Pastikan path file log benar dan file ada.
-- **Permission denied saat menjalankan Network IDS?**  
-  Jalankan dengan sudo/root.
+- **Permission denied saat menjalankan Network IDS/IDS/IPS?**  
+  Jalankan dengan sudo/root jika perlu akses firewall atau network interface. Jika permission denied pada ./ids_main.py, ./ips_main.py: pastikan sudah chmod +x, atau gunakan python ...
 - **WebSocket live feed tidak muncul?**  
   Pastikan file log (`ids_ips.log`) ada dan terisi event.
 - **Notifikasi desktop tidak muncul?**  
   Pastikan `notify2` terinstall dan desktop environment mendukung.
 - **Blokir IP gagal?**  
   Pastikan Anda menjalankan dengan hak sudo/root dan backend firewall (iptables/nftables/ufw) tersedia di sistem. Cek log untuk pesan error backend.
+  Jika error modul: pastikan jalankan dari root folder project.
 
 ---
 

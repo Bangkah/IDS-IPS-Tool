@@ -1,0 +1,7 @@
+[
+  {"action": "alert", "msg": "Failed password", "regex": "Failed password.*from ([\\d.]+)", "severity": "high"},
+  {"action": "alert", "msg": "SQL Injection", "regex": "(SELECT|UNION|INSERT|UPDATE|DELETE|DROP|--|;|'|\")", "severity": "high", "whitelist": ["10.0.0.1"]},
+  {"action": "alert", "msg": "XSS Attack", "regex": "(<script>|javascript:|onerror=|onload=)", "severity": "high"},
+  {"action": "alert", "msg": "DDoS SYN Flood", "regex": "SYN flood|Possible SYN flooding|TCP SYN flood", "severity": "critical"},
+  {"action": "alert", "msg": "Brute Force", "regex": "authentication failure|login failed|excessive login attempts", "severity": "medium"}
+]

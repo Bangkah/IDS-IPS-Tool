@@ -43,6 +43,53 @@
 
 ---
 
+
+## 🔎 Rule Engine Suricata-like (Signature, Whitelist, Severity)
+
+Mulai versi terbaru, IDS/IPS mendukung rule engine ala Suricata:
+
+- **Rule format:**
+  - Field: `action`, `msg`, `regex`, `severity`, `src_ip`, `dst_ip`, `whitelist`
+  - Contoh rule:
+    ```json
+    {
+      "action": "alert",
+      "msg": "SQL Injection attempt",
+      "regex": "(SELECT|UNION|INSERT|UPDATE|DELETE|DROP|--|;|'|\")",
+      "severity": "high",
+      "src_ip": null,
+      "dst_ip": null,
+      "whitelist": ["127.0.0.1"]
+    }
+    ```
+- **Whitelist:** IP yang diabaikan oleh rule tertentu.
+- **Severity:** critical, high, medium, low, info (bisa dikustom).
+- **Flexible:** Bisa deteksi serangan web, brute force, DDoS, dsb.
+
+> Semua rule bisa didefinisikan di file JSON (misal `rules.json`) atau langsung di config.
+
+### Contoh Rule File (rules.json)
+```json
+[
+  {"action": "alert", "msg": "Failed password", "regex": "Failed password.*from ([\\d.]+)", "severity": "high"},
+  {"action": "alert", "msg": "SQL Injection", "regex": "(SELECT|UNION|INSERT|UPDATE|DELETE|DROP|--|;|'|\")", "severity": "high", "whitelist": ["10.0.0.1"]}
+]
+```
+
+### Integrasi ke IDS/IPS
+- Tambahkan/muat rule dari file JSON
+- Jalankan engine pada setiap log/alert
+- Hanya alert yang lolos whitelist dan sesuai severity yang diproses
+
+### Export Log ke ELK/Grafana
+- Semua event/alert dapat diekspor ke file JSON/CSV
+- Bisa di-push ke ELK Stack (Elasticsearch, Logstash, Kibana) atau Grafana (via filebeat, REST API, dsb)
+- Contoh: `python export_log.py --elk` atau integrasi filebeat ke `ids_ips.log`
+
+---
+
+---
+
 ## 🗂️ Struktur Proyek
 
 ```
@@ -73,19 +120,35 @@ ids_ips_tool/
 
 ## ⚙️ Instalasi
 
+
 1. **Pastikan Python 3.7+ dan pip sudah terpasang**
-2. **Install dependensi:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. **(Opsional) Install notifikasi desktop:**
-   ```bash
-   pip install notify2
-   ```
-4. **(Opsional) Untuk real-time monitoring:**
-   ```bash
-   pip install watchdog
-   ```
+
+2. **(Rekomendasi) Buat dan aktifkan virtual environment:**
+  ```bash
+  python3 -m venv .venv
+  # Aktifkan venv (Linux/macOS)
+  source .venv/bin/activate
+  # atau jika menggunakan fish shell:
+  source .venv/bin/activate.fish
+  # Aktifkan venv (Windows)
+  .venv\Scripts\activate
+  ```
+
+3. **Install dependensi:**
+  ```bash
+  pip install -r requirements.txt
+  pip install uvicorn  # pastikan uvicorn terinstall di venv
+  ```
+
+4. **(Opsional) Install notifikasi desktop:**
+  ```bash
+  pip install notify2
+  ```
+
+5. **(Opsional) Untuk real-time monitoring:**
+  ```bash
+  pip install watchdog
+  ```
 
 ### Instalasi langsung sebagai package dari GitHub
 
@@ -102,7 +165,23 @@ pip install git+https://github.com/Bangkah/IDS-IPS-Tool.git@v1.0.1
 
 ## 📝 Konfigurasi
 
-Edit `config.json` untuk menambah/mengubah pola deteksi, file log, dan backend firewall (untuk IPS). Contoh:
+Edit `config.json` untuk menambah/mengubah pola deteksi, file log, dan backend firewall (untuk IPS). Contoh pola deteksi:
+
+```json
+  "patterns": [
+    {"name": "Failed password", "regex": "Failed password.*from ([\\d.]+)", "severity": "high"},
+    {"name": "SQL Injection", "regex": "(SELECT|UNION|INSERT|UPDATE|DELETE|DROP|--|;|'|\")", "severity": "high"},
+    {"name": "XSS Attack", "regex": "(<script>|javascript:|onerror=|onload=)", "severity": "high"},
+    {"name": "DDoS SYN Flood", "regex": "SYN flood|Possible SYN flooding|TCP SYN flood", "severity": "high"}
+  ]
+```
+
+Setiap pola terdiri dari:
+- `name`: Nama signature
+- `regex`: Pola regex/keyword yang dicari pada log
+- `severity`: Tingkat ancaman (low/medium/high)
+
+Contoh konfigurasi lainnya:
 
 ```json
 {
@@ -206,10 +285,21 @@ python -m firewall.firewall_main --block 1.2.3.4 --backend nftables
 
 ## 🌐 Dashboard Web (Real-time)
 
+
 ### Menjalankan Dashboard
 ```bash
+# Pastikan sudah mengaktifkan virtual environment (lihat bagian Instalasi di atas)
 uvicorn dashboard.app:app --reload
 # Buka browser ke http://127.0.0.1:8000
+```
+
+Jika muncul error `uvicorn: command not found`, pastikan Anda sudah mengaktifkan virtual environment dan sudah menjalankan `pip install uvicorn` di venv yang aktif.
+
+Jika tetap error, coba jalankan dengan path lengkap:
+```bash
+.venv/bin/uvicorn dashboard.app:app --reload
+atau
+python -m uvicorn dashboard.app:app --reload
 ```
 
 ### Fitur Dashboard

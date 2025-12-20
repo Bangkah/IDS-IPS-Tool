@@ -1,0 +1,41 @@
+{
+  "default": {
+    "name": "Default",
+    "primary": "#0d6efd",
+    "secondary": "#6c757d",
+    "success": "#198754",
+    "danger": "#dc3545",
+    "warning": "#ffc107",
+    "info": "#0dcaf0",
+    "light": "#f8f9fa",
+    "dark": "#181a1b",
+    "background": "#fff",
+    "text": "#212529"
+  },
+  "dark": {
+    "name": "Dark",
+    "primary": "#23272b",
+    "secondary": "#343a40",
+    "success": "#198754",
+    "danger": "#b30000",
+    "warning": "#ffc107",
+    "info": "#0dcaf0",
+    "light": "#23272b",
+    "dark": "#181a1b",
+    "background": "#181a1b",
+    "text": "#e0e0e0"
+  },
+  "soc": {
+    "name": "SOC Blue",
+    "primary": "#003366",
+    "secondary": "#00509e",
+    "success": "#00b894",
+    "danger": "#d7263d",
+    "warning": "#fbb13c",
+    "info": "#3ab0ff",
+    "light": "#eaf6fb",
+    "dark": "#1a2238",
+    "background": "#eaf6fb",
+    "text": "#1a2238"
+  }
+}

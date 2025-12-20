@@ -1,7 +1,10 @@
+
 import re
 import time
+import json
 from .config import load_config
 from .logger import setup_logger
+from .rule_engine import RuleEngine
 
 try:
     import notify2
@@ -11,9 +14,16 @@ except ImportError:
     notify2_inited = False
 
 class IDS:
-    def __init__(self, config):
+    def __init__(self, config, rules_path="rules.json"):
         self.patterns = config['patterns']
         self.logger = setup_logger(config['log_file'], name="IDS")
+        # Load Suricata-like rules
+        try:
+            with open(rules_path) as f:
+                rules = json.load(f)
+            self.rule_engine = RuleEngine.from_dicts(rules)
+        except Exception:
+            self.rule_engine = None
 
     def notify(self, title, message):
         if notify2:
@@ -27,23 +37,47 @@ class IDS:
 
     def analyze_line(self, line, line_num=None, realtime=False):
         alerts = []
-        for pattern in self.patterns:
-            match = re.search(pattern['regex'], line, re.IGNORECASE)
-            if match:
-                ip = match.group(1) if match.lastindex else '-'
+        # Suricata-like rule engine
+        if self.rule_engine:
+            # Extract IP (jika ada)
+            ip = None
+            m = re.search(r'from ([\d.]+)', line)
+            if m:
+                ip = m.group(1)
+            rule_alerts = self.rule_engine.process_log(line, src_ip=ip)
+            for ra in rule_alerts:
                 alert = {
                     'line': line_num,
-                    'pattern': pattern['name'],
-                    'severity': pattern['severity'],
-                    'ip': ip,
+                    'pattern': ra.get('msg'),
+                    'severity': ra.get('severity'),
+                    'ip': ip or '-',
                     'content': line.strip()
                 }
                 alerts.append(alert)
                 self.logger.warning(f"[IDS] {alert}")
                 if realtime and notify2:
-                    title = f"[IDS] {pattern['name']} ({pattern['severity']})"
+                    title = f"[IDS] {alert['pattern']} ({alert['severity']})"
                     msg = f"Line {line_num} | IP: {ip}\n{line.strip()}"
                     self.notify(title, msg)
+        else:
+            # fallback ke pola lama
+            for pattern in self.patterns:
+                match = re.search(pattern['regex'], line, re.IGNORECASE)
+                if match:
+                    ip = match.group(1) if match.lastindex else '-'
+                    alert = {
+                        'line': line_num,
+                        'pattern': pattern['name'],
+                        'severity': pattern['severity'],
+                        'ip': ip,
+                        'content': line.strip()
+                    }
+                    alerts.append(alert)
+                    self.logger.warning(f"[IDS] {alert}")
+                    if realtime and notify2:
+                        title = f"[IDS] {pattern['name']} ({pattern['severity']})"
+                        msg = f"Line {line_num} | IP: {ip}\n{line.strip()}"
+                        self.notify(title, msg)
         return alerts
 
     def analyze_log(self, log_file):

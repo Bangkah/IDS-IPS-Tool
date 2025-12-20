@@ -1,86 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+            <link rel="icon" href="/static/favicon.ico">
+            <style>
+                :root {
+                    --theme-primary: #0d6efd;
+                    --theme-secondary: #6c757d;
+                    --theme-success: #198754;
+                    --theme-danger: #dc3545;
+                    --theme-warning: #ffc107;
+                    --theme-info: #0dcaf0;
+                    --theme-light: #f8f9fa;
+                    --theme-dark: #181a1b;
+                    --theme-background: #fff;
+                    --theme-text: #212529;
+                }
+                body {
+                    background: var(--theme-background);
+                    color: var(--theme-text);
+                }
+                .card, .modal-content {
+                    background: var(--theme-light);
+                    color: var(--theme-text);
+                }
+                .table {
+                    color: var(--theme-text);
+                }
+                .severity-high { color: var(--theme-danger); font-weight: bold; }
+                .severity-critical { color: #b30000; font-weight: bold; }
+                .severity-medium { color: var(--theme-warning); font-weight: bold; }
+                .severity-low { color: var(--theme-success); font-weight: bold; }
+                .navbar-brand img { height: 2.2rem; margin-right: 0.5em; }
+            </style>
     <meta charset="UTF-8">
     <title>IDS/IPS Dashboard</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <h1>IDS/IPS Dashboard</h1>
-    <div class="dashboard-grid">
-        <div>
-            <h2>Grafik Serangan per Jam/Hari</h2>
-            <canvas id="attackLineChart"></canvas>
-        </div>
-        <div>
-            <h2>Jenis Serangan (Pie Chart)</h2>
-            <canvas id="attackPieChart"></canvas>
-        </div>
-        <div>
-            <h2>Top 5 Offending IPs</h2>
-            <ul id="topIps">
-                <li>192.168.1.10 (12x)</li>
-                <li>192.168.1.11 (8x)</li>
-                <li>192.168.1.12 (5x)</li>
-                <li>10.0.0.1 (3x)</li>
-                <li>8.8.8.8 (2x)</li>
-            </ul>
-        </div>
-        <div>
-            <h2>Status Real-time</h2>
-            <div id="status">Sniffer: <span style="color:green">Aktif</span></div>
-            <h3>Live Feed</h3>
-            <ul id="liveFeed"></ul>
-        </div>
-        <div>
-            <h2>Kontrol Panel</h2>
-            <form id="unblockForm">
-                <input type="text" id="ipToUnblock" placeholder="IP yang ingin di-unblock">
-                <button type="submit">Unblock IP</button>
-            </form>
-            <h3>Edit config.json</h3>
-                <div class="dashboard-grid">
-                    <div class="card">
-                        <h3>Statistik Serangan</h3>
-                        <canvas id="attackStatChart" height="120"></canvas>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+                                <button class="btn btn-outline-info ms-3" id="integrationBtn" aria-label="Integration settings"><i class="bi bi-bell"></i> Alerts</button>
+                    <!-- Integration Settings Modal -->
+                    <div class="modal fade" id="integrationModal" tabindex="-1" aria-labelledby="integrationModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="integrationModalLabel">Integration Settings</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="integrationForm">
+                                        <div class="mb-3">
+                                            <label for="slackWebhook" class="form-label">Slack Webhook URL</label>
+                                            <input type="url" class="form-control" id="slackWebhook" placeholder="https://hooks.slack.com/services/...">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="telegramToken" class="form-label">Telegram Bot Token</label>
+                                            <input type="text" class="form-control" id="telegramToken" placeholder="123456:ABC-DEF...">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="telegramChatId" class="form-label">Telegram Chat ID</label>
+                                            <input type="text" class="form-control" id="telegramChatId" placeholder="@yourgroup or chat id">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="emailAlert" class="form-label">Email for Alerts</label>
+                                            <input type="email" class="form-control" id="emailAlert" placeholder="your@email.com">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" id="saveIntegrationBtn">Save</button>
+                                    <button type="button" class="btn btn-success" id="testSlackBtn">Test Slack</button>
+                                    <button type="button" class="btn btn-info" id="testTelegramBtn">Test Telegram</button>
+                                    <button type="button" class="btn btn-warning" id="testEmailBtn">Test Email</button>
+                                    <span id="alertStatus" class="ms-2 small"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card">
-                        <h3>Jenis Serangan</h3>
-                        <canvas id="attackTypeChart" height="120"></canvas>
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="/static/favicon.ico" alt="Logo">
+                    <span>IDS/IPS Dashboard</span>
+                </a>
+                <div class="ms-auto d-flex align-items-center">
+                    <span class="badge bg-success me-2" id="badgeIDS" aria-label="IDS status" tabindex="0">IDS: Aktif</span>
+                    <span class="badge bg-success" id="badgeIPS" aria-label="IPS status" tabindex="0">IPS: Aktif</span>
+                    <button class="btn btn-outline-light btn-sm ms-3" id="toggleDark" aria-pressed="false" aria-label="Toggle dark mode">Dark Mode</button>
+                    <div class="dropdown ms-3">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="profileMenu" data-bs-toggle="dropdown" aria-expanded="false" aria-label="User menu">
+                            <span class="visually-hidden">User menu</span> <i class="bi bi-person-circle"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
+                            <li><span class="dropdown-item-text" id="currentUser">User</span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><button class="dropdown-item" id="logoutBtn">Logout</button></li>
+                        </ul>
                     </div>
-                    <div class="card">
-                        <h3>Top 5 IP Penyerang</h3>
-                        <ul id="topIpList"></ul>
-                    </div>
-                    <div class="card">
-                        <h3>Status</h3>
-                        <ul>
-                            <li>Sniffer: <span id="statusSniffer">-</span></li>
-                            <li>IPS: <span id="statusIPS">-</span></li>
+                    <div class="dropdown ms-3">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="themeMenu" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Theme selector">
+                            <span class="visually-hidden">Theme selector</span> <i class="bi bi-palette"></i> Theme
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" id="themeDropdown" aria-labelledby="themeMenu">
                         </ul>
                     </div>
                 </div>
-                <div class="dashboard-grid" style="margin-top:2em">
-                    <div class="card">
-                        <h3>Live Feed (WebSocket)</h3>
-                        <pre id="liveFeed" style="height:180px;overflow:auto;background:#222;color:#fff;padding:1em;font-size:0.95em"></pre>
-                    </div>
-                    <div class="card">
-                        <h3>Kontrol Panel</h3>
-                        <form id="unblockForm">
-                            <label>Unblock IP:</label>
-                            <input type="text" id="unblockIp" placeholder="IP address" required style="width:60%">
-                            <button type="submit">Unblock</button>
-                        </form>
-                        <button id="editConfigBtn" style="margin-top:1em">Edit config.json</button>
+            </div>
+        </nav>
+        <div class="container py-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Signature/Pola Deteksi Aktif</div>
+                <div class="card-body p-2">
+                    <div class="table-responsive">
+                        <table id="signatureTable" class="table table-bordered table-sm align-middle mb-0">
+                            <thead class="table-light"><tr><th>Nama</th><th>Regex</th><th>Severity</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
-                <div id="configModal" class="modal">
+            </div>
+            <div class="row g-4">
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card h-100 border-info">
+                                        <div class="card-header bg-info text-white">Anomaly Detection</div>
+                                        <div class="card-body">
+                                            <canvas id="anomalyChart"></canvas>
+                                            <div id="anomalySummary" class="mt-2 small text-muted">No anomalies detected.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card h-100 border-warning">
+                                        <div class="card-header bg-warning text-dark">Attack Trends</div>
+                                        <div class="card-body">
+                                            <canvas id="trendChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card h-100 border-primary">
+                                        <div class="card-header bg-primary text-white">Predictive Analytics</div>
+                                        <div class="card-body">
+                                            <canvas id="predictiveChart"></canvas>
+                                            <div class="mt-2 small text-muted">Forecast: Stable</div>
+                                        </div>
+                                    </div>
+                                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header">Grafik Serangan per Jam/Hari</div>
+                        <div class="card-body"><canvas id="attackLineChart"></canvas></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header">Jenis Serangan (Pie Chart)</div>
+                        <div class="card-body"><canvas id="attackPieChart"></canvas></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header">Top 5 Offending IPs</div>
+                        <div class="card-body"><ul id="topIps" class="list-group list-group-flush"></ul></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header">Status Real-time</div>
+                        <div class="card-body">
+                            <div id="status">Sniffer: <span class="text-success">Aktif</span></div>
+                            <h6 class="mt-3">Live Feed</h6>
+                            <ul id="liveFeed" class="list-group list-group-flush"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header">Kontrol Panel</div>
+                        <div class="card-body">
+                            <form id="unblockForm" class="row g-2 mb-3">
+                                <div class="col-8"><input type="text" id="ipToUnblock" class="form-control" placeholder="IP yang ingin di-unblock"></div>
+                                <div class="col-4"><button type="submit" class="btn btn-danger w-100">Unblock IP</button></div>
+                            </form>
+                            <button id="editConfigBtn" class="btn btn-secondary">Edit config.json</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal config.json -->
+            <div class="modal fade" id="configModal" tabindex="-1" aria-labelledby="configModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
                     <div class="modal-content">
-                        <span id="closeConfigModal" class="close">&times;</span>
-                        <h3>Edit config.json</h3>
-                        <textarea id="configTextarea" style="width:100%;height:200px"></textarea>
-                        <button id="saveConfigBtn">Simpan</button>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="configModalLabel">Edit config.json</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <textarea id="configTextarea" class="form-control" style="height:200px"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="saveConfigBtn" class="btn btn-primary">Simpan</button>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <script src="/static/dashboard.js"></script>
+        <script>
+        // Alert integration test buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            function sendTestAlert(type) {
+                const opts = { slack: false, telegram: false, email: false };
+                opts[type] = true;
+                fetch('/api/alert', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...setAuthHeader().headers },
+                    body: JSON.stringify({ message: 'Test alert from dashboard', ...opts })
+                }).then(r => {
+                    document.getElementById('alertStatus').textContent = r.ok ? 'Sent!' : 'Failed!';
+                    setTimeout(() => document.getElementById('alertStatus').textContent = '', 2000);
+                });
+            }
+            document.getElementById('testSlackBtn').onclick = function() { sendTestAlert('slack'); };
+            document.getElementById('testTelegramBtn').onclick = function() { sendTestAlert('telegram'); };
+            document.getElementById('testEmailBtn').onclick = function() { sendTestAlert('email'); };
+        });
+        </script>
+        <script>
+        // Integration modal logic
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('integrationBtn');
+            if (btn) {
+                btn.onclick = function() {
+                    const modal = new bootstrap.Modal(document.getElementById('integrationModal'));
+                    modal.show();
+                };
+            }
+            document.getElementById('saveIntegrationBtn').onclick = function() {
+                // Save integration settings to localStorage (demo; backend integration next)
+                localStorage.setItem('slackWebhook', document.getElementById('slackWebhook').value);
+                localStorage.setItem('telegramToken', document.getElementById('telegramToken').value);
+                localStorage.setItem('telegramChatId', document.getElementById('telegramChatId').value);
+                localStorage.setItem('emailAlert', document.getElementById('emailAlert').value);
+                bootstrap.Modal.getInstance(document.getElementById('integrationModal')).hide();
+            };
+            // Load settings on open
+            document.getElementById('integrationModal').addEventListener('show.bs.modal', function() {
+                document.getElementById('slackWebhook').value = localStorage.getItem('slackWebhook') || '';
+                document.getElementById('telegramToken').value = localStorage.getItem('telegramToken') || '';
+                document.getElementById('telegramChatId').value = localStorage.getItem('telegramChatId') || '';
+                document.getElementById('emailAlert').value = localStorage.getItem('emailAlert') || '';
+            });
+        });
+        </script>
+        <script>
+        // Theme selector logic
+        async function loadThemes() {
+            const resp = await fetch('/static/themes.json');
+            if (!resp.ok) return;
+            const themes = await resp.json();
+            const themeDropdown = document.getElementById('themeDropdown');
+            themeDropdown.innerHTML = '';
+            Object.entries(themes).forEach(([key, theme]) => {
+                const li = document.createElement('li');
+                const btn = document.createElement('button');
+                btn.className = 'dropdown-item';
+                btn.textContent = theme.name;
+                btn.onclick = () => applyTheme(key, themes[key]);
+                li.appendChild(btn);
+                themeDropdown.appendChild(li);
+            });
+        }
+        function applyTheme(key, theme) {
+            Object.entries(theme).forEach(([k, v]) => {
+                document.documentElement.style.setProperty('--theme-' + k, v);
+            });
+            localStorage.setItem('dashboard_theme', key);
+        }
+        function setInitialTheme() {
+            fetch('/static/themes.json').then(r => r.json()).then(themes => {
+                const key = localStorage.getItem('dashboard_theme') || 'default';
+                if (themes[key]) applyTheme(key, themes[key]);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            loadThemes();
+            setInitialTheme();
+        });
+        </script>
+        <script>
+        // Set ARIA attributes and keyboard navigation for accessibility
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('toggleDark').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') this.click();
+            });
+            // Set current user in profile menu if available
+            const token = localStorage.getItem('jwt_token');
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    document.getElementById('currentUser').textContent = payload.sub || 'User';
+                } catch {}
+            }
+            // Logout button
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.onclick = function() {
+                    localStorage.removeItem('jwt_token');
+                    location.reload();
+                };
+            }
+        });
+        </script>

@@ -33,6 +33,13 @@
 - **Notifikasi Desktop:** Opsional, via notify2
 - **Konfigurasi Mudah:** Semua pola dan pengaturan di `config.json`
 - **Unit Test:** Pengujian mudah dengan unittest
+- **Firewall Tool (Terpisah):**
+  - Manajemen blokir/unblock IP dan list rules untuk iptables, nftables, ufw melalui CLI terpisah (firewall/)
+  - Validasi IP otomatis sebelum blokir
+  - Tidak akan memblokir IP yang sudah diblokir (deteksi duplikat)
+  - Unblock presisi (khusus nftables: by handle)
+  - Output list rules lebih mudah dibaca
+  - Error handling dan feedback ke user lebih jelas
 
 ---
 
@@ -48,6 +55,7 @@ ids_ips_tool/
 ├── config.json        # Konfigurasi pola deteksi
 ├── requirements.txt   # Dependensi Python
 ├── dashboard/         # Dashboard web (FastAPI, HTML, JS, CSS)
+├── firewall/          # Tool manajemen firewall (blokir, unblock, list IP)
 ├── README.md
 ```
 
@@ -57,6 +65,7 @@ ids_ips_tool/
 
 - **src/**: Implementasi utama IDS, IPS, logger, alert, dsb
 - **dashboard/**: Backend FastAPI, frontend HTML/JS/CSS, WebSocket live feed
+- **firewall/**: Tool terpisah untuk manajemen firewall melalui CLI
 - **config.json**: Pola deteksi, pengaturan log, dsb
 - **Log File**: Semua event dicatat ke `ids_ips.log` (default)
 
@@ -148,6 +157,50 @@ sudo python netids_main.py config.json --iface <nama_interface>
 # Catatan: Pastikan nama interface (misal eth0, enp3s0, wlan0) sesuai dengan yang ada di sistem Anda.
 # Untuk melihat daftar interface, gunakan perintah: ip link
 ```
+
+### 5. Firewall CLI (Manajemen Firewall Terpisah)
+
+Tool ini memungkinkan Anda memblokir, membuka blokir, dan melihat daftar IP yang diblokir secara langsung melalui command line, mendukung iptables, nftables, dan ufw.
+
+Fitur unggulan:
+- Validasi IP address sebelum blokir
+- Tidak akan memblokir IP yang sudah diblokir
+- Unblock otomatis mencari rule nftables secara presisi (by handle)
+- Output list rules mudah dibaca
+- Error handling dan feedback ke user lebih jelas
+
+Contoh penggunaan:
+
+Blokir IP:
+```bash
+python -m firewall.firewall_main --block 1.2.3.4
+# atau
+PYTHONPATH=. python firewall/firewall_main.py --block 1.2.3.4
+```
+Jika IP sudah diblokir, akan muncul pesan info.
+
+Unblock IP:
+```bash
+python -m firewall.firewall_main --unblock 1.2.3.4
+# atau
+PYTHONPATH=. python firewall/firewall_main.py --unblock 1.2.3.4
+```
+Jika rule tidak ditemukan, akan muncul info.
+
+List IP yang diblokir:
+```bash
+python -m firewall.firewall_main --list
+# atau
+PYTHONPATH=. python firewall/firewall_main.py --list
+```
+Output akan menampilkan rules yang aktif secara ringkas.
+
+Pilih backend firewall secara eksplisit:
+```bash
+python -m firewall.firewall_main --block 1.2.3.4 --backend nftables
+```
+
+> **Catatan:** Jalankan dari root folder project agar import modul berhasil. Gunakan hak sudo/root untuk akses firewall.
 
 ---
 
